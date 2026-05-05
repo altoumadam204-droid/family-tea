@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍵 Family Tea — Order Real Tea, Delivered in <1 Hour</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #faf7f2;
+            --surface: #ffffff;
+            --text: #3e3a35;
+            --text-muted: #7a7369;
+            --accent: #c49a6c;
+            --accent-dark: #a77b4a;
+            --gold: #b68b5c;
+            --green: #7c9a7e;
+            --green-dark: #5a735b;
+            --danger: #b15252;
+            --border: #e4ddd4;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.08);
+            --radius: 22px;
+            --radius-sm: 14px;
+            --font-body: 'Quicksand', sans-serif;
+            --font-heading: 'Playfair Display', serif;
+            --transition: 0.25s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            background-image:
+                radial-gradient(circle at 20% 10%, rgba(196,154,108,0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(124,154,126,0.04) 0%, transparent 50%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            border-radius: 50px;
+            padding: 12px 25px;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 15px;
+            z-index: 90;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.85);
+            border: 1px solid #fff;
+        }
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #5c4a3a;
+        }
+        .cart-nav-btn {
+            background: none;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .cart-nav-btn:hover { background: var(--accent); color: #fff; }
+        .cart-count {
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* HERO */
+        .hero {
+            background: var(--surface);
+            border-radius: 32px;
+            padding: 35px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            align-items: center;
+        }
+        .hero-text { flex: 1 1 400px; }
+        .hero-title { font-family: var(--font-heading); font-size: 3rem; color: #5c4a3a; }
+        .hero-subtitle { font-family: var(--font-heading); font-size: 1.8rem; font-style: italic; color: var(--accent); margin: 8px 0 16px; }
+        .hero-details { color: var(--text-muted); line-height: 1.7; background: #fdfbf7; padding: 18px; border-radius: 20px; }
+        .hero-illustration { font-size: 5rem; }
+
+        /* FILTERS */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .filter-btn {
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 2px solid var(--border);
+            background: #fff;
+            color: #5c4a3a;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        /* MAIN LAYOUT */
+        .main-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .customizer {
+            flex: 2;
+            min-width: 350px;
+        }
+        .cart-panel {
+            flex: 1.2;
+            min-width: 320px;
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 22px;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 100px;
+            align-self: flex-start;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .tea-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .tea-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .tea-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--accent); }
+        .tea-card.active { border: 2px solid var(--accent); background: #fefaf5; }
+        .tea-emoji { font-size: 2rem; }
+        .tea-name { font-weight: 700; margin: 4px 0; }
+        .tea-price { color: var(--accent); font-weight: 600; }
+        .info-icon {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #f0ebe2;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .cup-size-preview {
+            width: 120px;
+            margin: 0 auto;
+            transition: transform 0.3s;
+        }
+        .size-buttons { display: flex; gap: 8px; margin-top: 8px; }
+        .size-btn {
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 2px solid var(--border);
+            background: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .size-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .price-adj { font-size: 0.7rem; margin-left: 4px; opacity: 0.8; }
+
+        .add-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 30px;
+            border: none;
+            background: linear-gradient(135deg, #c49a6c, #b68b5c);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 15px 0 10px;
+            transition: var(--transition);
+        }
+        .add-btn:hover { background: linear-gradient(135deg, #d4aa7a, #c49a6c); }
+
+        .promo-row {
+            display: flex;
+            gap: 8px;
+            margin: 10px 0;
+        }
+        .promo-row input { flex: 1; padding: 10px; border-radius: 20px; border: 2px solid #e7d9cc; }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 30px;
+            background: var(--green);
+            color: white;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            margin-top: 12px;
+            font-size: 1rem;
+        }
+        .checkout-btn:disabled { background: #ccc; }
+
+        .modal-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+            z-index: 200; display: none; align-items: center; justify-content: center;
+        }
+        .modal { background: #fff; border-radius: 24px; padding: 25px; max-width: 400px; width: 90%; }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #2d4a2c; color: white; padding: 12px 24px; border-radius: 30px;
+            font-weight: 600; z-index: 300; animation: fade 2.5s forwards;
+        }
+        @keyframes fade { 0%{opacity:0;bottom:0;} 10%{opacity:1;bottom:20px;} 80%{opacity:1;} 100%{opacity:0;} }
+
+        .fly-item {
+            position: fixed; z-index: 250; transition: all 0.6s ease-in-out; pointer-events: none;
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav class="navbar">
+        <div class="logo">🍵 Family Tea</div>
+        <button class="cart-nav-btn" id="cartNavBtn" aria-label="View cart">
+            🛒 Cart <span class="cart-count" id="cartCount">0</span>
+        </button>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-text">
+            <div class="hero-title">Family Tea</div>
+            <div class="hero-subtitle">Time for peace, delivered.</div>
+            <div class="hero-details">
+                <strong>🧑‍🍳 I brew every cup myself.</strong> Your order directly supports this small family business.<br>
+                <strong>🚀 Delivery in under 1 hour</strong> by our own couriers.<br>
+                <strong>🌍 Real tea, real people.</strong> We use ethically sourced leaves.
+            </div>
+        </div>
+        <div class="hero-illustration">🕊️🍵🌿</div>
+    </div>
+
+    <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-category="all">All Teas</button>
+        <button class="filter-btn" data-category="black">Black</button>
+        <button class="filter-btn" data-category="green">Green</button>
+        <button class="filter-btn" data-category="herbal">Herbal</button>
+        <button class="filter-btn" data-category="white">White</button>
+        <button class="filter-btn" data-category="oolong">Oolong</button>
+    </div>
+
+    <div class="main-grid">
+        <div class="customizer">
+            <input type="text" id="searchInput" placeholder="🔍 Search tea..." aria-label="Search tea" style="width:100%;padding:12px;border-radius:30px;border:2px solid #ece4d9;margin-bottom:16px;">
+
+            <div class="tea-grid" id="teaGrid"></div>
+
+            <div style="margin-top:20px;">
+                <label><strong>Cup style</strong></label>
+                <div class="size-buttons" id="cupStyle">
+                    <button class="size-btn active" data-cup="mug">☕ Mug</button>
+                    <button class="size-btn" data-cup="glass">🥛 Glass</button>
+                    <button class="size-btn" data-cup="flask">🧪 Flask</button>
+                </div>
+            </div>
+            <div style="margin-top:12px;">
+                <label><strong>Size</strong></label>
+                <div class="size-buttons" id="sizeSelector">
+                    <button class="size-btn" data-size="small">Small 6oz <span class="price-adj">-$0.75</span></button>
+                    <button class="size-btn active" data-size="medium">Medium 8oz <span class="price-adj">$0.00</span></button>
+                    <button class="size-btn" data-size="large">Large 12oz <span class="price-adj">+$0.75</span></button>
+                </div>
+            </div>
+            <div style="margin:15px 0;">
+                <label>🍬 Sugar: <span id="sugarValue">2</span> tsp</label>
+                <input type="range" min="0" max="5" value="2" id="sugarSlider" style="width:100%;">
+            </div>
+
+            <div class="cup-size-preview" id="cupPreviewContainer">
+                <svg viewBox="0 0 120 140" id="cupPreviewSvg">
+                    <rect id="cupBody" x="25" y="40" width="70" height="65" rx="10" fill="#e8e0d5" stroke="#b0a090" stroke-width="2.5"/>
+                    <path id="cupHandle" d="M95,55 Q115,55 115,75 Q115,95 95,95" fill="none" stroke="#b0a090" stroke-width="3"/>
+                    <rect id="teaFill" x="28" y="55" width="64" height="45" rx="8" fill="#8b5e3c"/>
+                </svg>
+            </div>
+            <p style="text-align:center;font-weight:700;" id="livePrice">$3.50</p>
+
+            <button class="add-btn" id="addToCartBtn">🛒 Add to Cart</button>
+        </div>
+
+        <div class="cart-panel" id="cartPanel">
+            <h3 style="font-family:var(--font-heading);">Your Cart</h3>
+            <div id="cartItemsContainer" style="min-height:80px;"></div>
+            <div style="font-weight:700;text-align:right;margin:10px 0;" id="cartTotal">Total: $0.00</div>
+
+            <div class="promo-row">
+                <input type="text" id="promoCode" placeholder="Promo code">
+                <button id="applyPromo" style="background:var(--accent);color:white;border:none;border-radius:20px;padding:10px 15px;">Apply</button>
+            </div>
+
+            <h4>📍 Delivery Address</h4>
+            <input class="payment-input" id="addressStreet" placeholder="Street" aria-label="Street address" style="width:100%;padding:10px;border-radius:20px;border:2px solid #e7d9cc;margin-bottom:6px;">
+            <div style="display:flex;gap:6px;">
+                <input class="payment-input" id="addressCity" placeholder="City" style="flex:1;">
+                <input class="payment-input" id="addressZip" placeholder="ZIP" style="flex:1;">
+            </div>
+
+            <h4 style="margin-top:12px;">💳 Payment (demo)</h4>
+            <input class="payment-input" id="cardName" placeholder="Cardholder Name">
+            <input class="payment-input" id="cardNumber" placeholder="Card Number" maxlength="19">
+            <div style="display:flex;gap:6px;">
+                <input class="payment-input" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+                <input class="payment-input" id="cardCVV" placeholder="CVV" maxlength="4">
+            </div>
+
+            <button class="checkout-btn" id="placeOrderBtn" disabled>💸 Place Order</button>
+            <p style="font-size:0.7rem;color:var(--text-muted);margin-top:8px;">* In a live site, payment would be processed securely via Stripe.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span>📍 123 Tea Lane, Serenity City</span>
+        <span>📞 (555) 123-4567</span>
+        <span>✉️ hello@familytea.com</span>
+        <span><a href="#">Privacy Policy</a></span>
+        <span><a href="#">Terms of Service</a></span>
+    </div>
+</div>
+
+<div class="modal-overlay" id="teaModal">
+    <div class="modal">
+        <h2 id="modalTeaName"></h2>
+        <p id="modalTeaDesc"></p>
+        <p><strong>Origin:</strong> <span id="modalOrigin"></span></p>
+        <p><strong>Caffeine:</strong> <span id="modalCaffeine"></span></p>
+        <p><strong>Tasting notes:</strong> <span id="modalNotes"></span></p>
+        <button onclick="closeModal()" style="margin-top:12px;padding:8px 20px;border-radius:20px;">Close</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const teaData = {
+            'earl-grey':{name:'Earl Grey',emoji:'🌿',base:3.50,color:'#8b5e3c',cat:'black',origin:'Sri Lanka',caffeine:'Medium',notes:'Bergamot, citrus',desc:'Classic black tea with bright bergamot.'},
+            'matcha':{name:'Matcha',emoji:'🍵',base:4.50,color:'#7a9a3a',cat:'green',origin:'Japan',caffeine:'High',notes:'Umami, grassy',desc:'Stone-ground green tea powder.'},
+            'chai':{name:'Chai',emoji:'🫚',base:3.75,color:'#d4956a',cat:'black',origin:'India',caffeine:'Medium',notes:'Spices, ginger, cardamom',desc:'Spiced black tea with milk.'},
+            'oolong':{name:'Oolong',emoji:'🍂',base:4.00,color:'#c4884a',cat:'oolong',origin:'Taiwan',caffeine:'Medium',notes:'Floral, creamy',desc:'Partially oxidized, fragrant.'},
+            'chamomile':{name:'Chamomile',emoji:'🌼',base:3.25,color:'#b8c480',cat:'herbal',origin:'Egypt',caffeine:'None',notes:'Apple, honey',desc:'Calming herbal infusion.'},
+            'white':{name:'White Tea',emoji:'🤍',base:4.25,color:'#e8d5b0',cat:'white',origin:'China',caffeine:'Low',notes:'Delicate, melon',desc:'Minimally processed, subtle.'},
+            'green':{name:'Green Tea',emoji:'🍃',base:3.00,color:'#8a9a5a',cat:'green',origin:'China',caffeine:'Low',notes:'Fresh, vegetal',desc:'Steamed green leaves.'},
+            'rooibos':{name:'Rooibos',emoji:'🟤',base:3.50,color:'#c47a4a',cat:'herbal',origin:'South Africa',caffeine:'None',notes:'Sweet, nutty',desc:'Red bush tea, naturally sweet.'},
+            'peppermint':{name:'Peppermint',emoji:'🌱',base:3.00,color:'#a8c8a0',cat:'herbal',origin:'USA',caffeine:'None',notes:'Cool, minty',desc:'Refreshing digestive aid.'},
+            'jasmine':{name:'Jasmine',emoji:'🌸',base:3.75,color:'#c8b880',cat:'green',origin:'China',caffeine:'Low',notes:'Fragrant, floral',desc:'Green tea scented with jasmine.'},
+            'assam':{name:'Assam',emoji:'🇮🇳',base:3.25,color:'#6b4e31',cat:'black',origin:'India',caffeine:'High',notes:'Malty, bold',desc:'Full-bodied breakfast tea.'},
+            'darjeeling':{name:'Darjeeling',emoji:'⛰️',base:4.00,color:'#c49a6c',cat:'black',origin:'India',caffeine:'Medium',notes:'Muscatel, delicate',desc:'Champagne of teas.'},
+        };
+
+        const cupStyles = {
+            mug: { fill:'#e8e0d5', stroke:'#b0a090', handle:'M95,55 Q115,55 115,75 Q115,95 95,95' },
+            glass: { fill:'rgba(220,230,240,0.5)', stroke:'#a0b8cc', handle:'M95,55 Q112,55 112,75 Q112,95 95,95' },
+            flask: { fill:'rgba(210,225,240,0.55)', stroke:'#8899aa', handle:'M95,50 Q110,50 110,75 Q110,100 95,100' }
+        };
+        const sizes = { small:{oz:6, adj:-0.75}, medium:{oz:8, adj:0}, large:{oz:12, adj:0.75} };
+
+        let state = {
+            cup: 'mug',
+            tea: 'earl-grey',
+            size: 'medium',
+            sugar: 2,
+            cart: JSON.parse(localStorage.getItem('familyTeaCart')) || [],
+            promoApplied: false
+        };
+
+        function saveCart() { localStorage.setItem('familyTeaCart', JSON.stringify(state.cart)); }
+        function updateCartUI() {
+            const container = document.getElementById('cartItemsContainer');
+            const totalEl = document.getElementById('cartTotal');
+            const countEl = document.getElementById('cartCount');
+            const btn = document.getElementById('placeOrderBtn');
+            if (!state.cart.length) {
+                container.innerHTML = '<p style="color:var(--text-muted);">Cart is empty.</p>';
+                totalEl.textContent = 'Total: $0.00';
+            } else {
+                container.innerHTML = state.cart.map((item, idx) => `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#fdfbf8;border-radius:12px;margin-bottom:6px;">
+                        <div><strong>${item.teaEmoji} ${item.teaName}</strong><br><small>${item.cup} · ${item.size}oz · 🍬${item.sugar}tsp</small></div>
+                        <span>$${item.price.toFixed(2)}</span>
+                        <button onclick="removeItem(${idx})" style="background:none;border:none;color:var(--danger);">✕</button>
+                    </div>
+                `).join('');
+                const total = state.cart.reduce((s,i)=>s+i.price,0).toFixed(2);
+                totalEl.textContent = `Total: $${total}`;
+            }
+            countEl.textContent = state.cart.length;
+            btn.disabled = state.cart.length === 0;
+        }
+
+        window.removeItem = (idx) => { state.cart.splice(idx,1); saveCart(); updateCartUI(); };
+
+        function getCurrentPrice() {
+            let base = teaData[state.tea].base;
+            let adj = sizes[state.size].adj;
+            return Math.min(4.50, Math.max(2.50, base + adj));
+        }
+
+        function updatePreview() {
+            const cup = cupStyles[state.cup];
+            document.getElementById('cupBody').setAttribute('fill', cup.fill);
+            document.getElementById('cupBody').setAttribute('stroke', cup.stroke);
+            document.getElementById('cupHandle').setAttribute('d', cup.handle);
+            document.getElementById('teaFill').setAttribute('fill', teaData[state.tea].color);
+            // Scale cup based on size
+            const scale = state.size === 'small' ? 0.8 : state.size === 'large' ? 1.15 : 1;
+            document.getElementById('cupPreviewContainer').style.transform = `scale(${scale})`;
+            document.getElementById('livePrice').textContent = `$${getCurrentPrice().toFixed(2)}`;
+            document.getElementById('sugarValue').textContent = state.sugar;
+        }
+
+        function renderTeaCards(filter='all') {
+            const grid = document.getElementById('teaGrid');
+            grid.innerHTML = '';
+            Object.entries(teaData).forEach(([key, tea]) => {
+                if (filter !== 'all' && tea.cat !== filter) return;
+                const card = document.createElement('div');
+                card.className = `tea-card ${state.tea===key?'active':''}`;
+                card.innerHTML = `
+                    <div class="info-icon" data-tea="${key}">ℹ️</div>
+                    <div class="tea-emoji">${tea.emoji}</div>
+                    <div class="tea-name">${tea.name}</div>
+                    <div class="tea-price">$${tea.base.toFixed(2)}</div>
+                `;
+                card.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('info-icon')) {
+                        openModal(key);
+                        return;
+                    }
+                    state.tea = key;
+                    document.querySelectorAll('.tea-card').forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                    updatePreview();
+                });
+                grid.appendChild(card);
+            });
+        }
+
+        function openModal(key) {
+            const tea = teaData[key];
+            document.getElementById('modalTeaName').textContent = tea.emoji + ' ' + tea.name;
+            document.getElementById('modalTeaDesc').textContent = tea.desc;
+            document.getElementById('modalOrigin').textContent = tea.origin;
+            document.getElementById('modalCaffeine').textContent = tea.caffeine;
+            document.getElementById('modalNotes').textContent = tea.notes;
+            document.getElementById('teaModal').style.display = 'flex';
+        }
+        window.closeModal = () => document.getElementById('teaModal').style.display = 'none';
+
+        function addToCart() {
+            const item = {
+                teaName: teaData[state.tea].name,
+                teaEmoji: teaData[state.tea].emoji,
+                cup: state.cup.charAt(0).toUpperCase()+state.cup.slice(1),
+                size: sizes[state.size].oz,
+                sugar: state.sugar,
+                price: getCurrentPrice()
+            };
+            state.cart.push(item);
+            saveCart();
+            updateCartUI();
+            flyToCart();
+            showToast('✅ Added to cart');
+        }
+
+        function flyToCart() {
+            const btn = document.getElementById('addToCartBtn');
+            const cartBtn = document.getElementById('cartNavBtn');
+            const rectBtn = btn.getBoundingClientRect();
+            const rectCart = cartBtn.getBoundingClientRect();
+            const fly = document.createElement('div');
+            fly.className = 'fly-item';
+            fly.textContent = '🍵';
+            fly.style.left = rectBtn.left + 'px';
+            fly.style.top = rectBtn.top + 'px';
+            document.body.appendChild(fly);
+            requestAnimationFrame(() => {
+                fly.style.left = rectCart.left + 'px';
+                fly.style.top = rectCart.top + 'px';
+                fly.style.opacity = '0';
+                fly.style.transform = 'scale(0.5)';
+            });
+            setTimeout(() => fly.remove(), 700);
+        }
+
+        function placeOrder() {
+            if (!state.cart.length) return;
+            const street = document.getElementById('addressStreet').value.trim();
+            const city = document.getElementById('addressCity').value.trim();
+            const zip = document.getElementById('addressZip').value.trim();
+            if (!street || !city || !zip) return showToast('⚠️ Enter full address');
+            const total = state.cart.reduce((s,i)=>s+i.price,0).toFixed(2);
+            document.getElementById('placeOrderBtn').disabled = true;
+            showToast(`✅ Order placed! $${total} to ${street}, ${city}. Delivered in <1h.`);
+            state.cart = [];
+            saveCart();
+            updateCartUI();
+            ['addressStreet','addressCity','addressZip','cardName','cardNumber','cardExpiry','cardCVV'].forEach(id=>document.getElementById(id).value='');
+        }
+
+        function showToast(msg) {
+            const toast = document.createElement('div'); toast.className='toast'; toast.textContent=msg;
+            document.body.appendChild(toast); setTimeout(()=>toast.remove(), 2500);
+        }
+
+        // Event bindings
+        document.getElementById('searchInput').addEventListener('input', e => {
+            const q = e.target.value.toLowerCase();
+            document.querySelectorAll('.tea-card').forEach(card => {
+                const name = card.querySelector('.tea-name').textContent.toLowerCase();
+                card.style.display = name.includes(q) ? '' : 'none';
+            });
+        });
+
+        document.querySelectorAll('#cupStyle .size-btn').forEach(btn => btn.addEventListener('click', function(){
+            document.querySelectorAll('#cupStyle .size-btn').forEach(b=>b.classList.remove('active'));
+            this.classList.add('active');
+            state.cup = this.dataset.cup;
+            updatePreview();
+        }));
+        document.querySelectorAll('#sizeSelector .size-btn').forEach(btn => btn.addEventListener('click', function(){
+            document.querySelectorAll('#sizeSelector .size-btn').forEach(b=>b.classList.remove('active'));
+            this.classList.add('active');
+            state.size = this.dataset.size;
+            updatePreview();
+        }));
+        document.getElementById('sugarSlider').addEventListener('input', e => {
+            state.sugar = +e.target.value;
+            updatePreview();
+        });
+        document.getElementById('addToCartBtn').addEventListener('click', addToCart);
+        document.getElementById('placeOrderBtn').addEventListener('click', placeOrder);
+        document.getElementById('cartNavBtn').addEventListener('click', ()=>{
+            document.getElementById('cartPanel').scrollIntoView({behavior:'smooth'});
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.addEventListener('click', function(){
+            document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+            this.classList.add('active');
+            renderTeaCards(this.dataset.category);
+        }));
+
+        document.getElementById('applyPromo').addEventListener('click', ()=>{
+            const code = document.getElementById('promoCode').value.trim();
+            if (code === 'PEACE') { showToast('🎉 10% off applied!'); state.promoApplied = true; }
+            else showToast('Invalid promo code');
+        });
+
+        // Initial render
+        renderTeaCards();
+        updatePreview();
+        updateCartUI();
+    })();
+</script>
+</body>
+</html>
